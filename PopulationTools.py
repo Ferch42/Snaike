@@ -77,20 +77,20 @@ def name_pop(pop,gen):
 
 class SubjectPool:
     
-    def __intit__(self):
+    def __init__(self):
         
         #List of the subjects of the form [ChromName, Chromossome]
-        self.population=CreateInitalPopulation()
+        self.population=CreateInitialPopulation()
         self.iterator=0
         self.generation=1
         
-    def set_fitness(fitness):
+    def set_fitness(self,fitness):
         
         #Sets the fitness of a given subject indexed by iterator
         self.population[self.iterator].append(fitness)
         self.iterator+=1
         
-    def get_subj():
+    def get_subj(self):
         
         if(self.iterator==100):
             self.generation+=1

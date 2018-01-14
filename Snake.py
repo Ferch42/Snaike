@@ -101,39 +101,76 @@ class Snake:
     
     def obstDist(self,ori):
         
-        dx,dy=0,0
-        if(ori==0):
-            dx=1
-        elif(ori==2):
-            dx=-1
-        elif(ori==3):
-            dy=-1
-        elif(ori==1):
-            dy=1
         
         virtualx,virtualy=int(self.head.rect.x+(self.head.image.get_width()*0.5)),int(self.head.rect.y+(self.head.image.get_height()*0.5))
-        flag=True
-        while(flag):
-            virtualx+=dx
-            virtualy+=dy
+        ans=0
+        if(ori==0):
+            flag=False
+            for bloc in self.blocks:
+                bx,by=bloc.get_render_rect()
+                sp=int(bloc.image.get_height()*0.7)
+                if(flag):
+                    break
+                if((virtualy>=by) and (virtualy <=(by+bloc.image.get_height()+sp)) and virtualx<=bx):
+                    ans=bx-virtualx
+                    flag=True
+            if(not flag):
+                for wall in self.walls:
+                    wx,wy=wall.x,wall.y
+                    if((virtualy>=wy) and (virtualy <=(wy+wall.height)) and virtualx<=wx):
+                        ans=wx-virtualx
+                        flag=True
+        elif(ori==2):
+
+            flag=False
+            for bloc in self.blocks:
+                bx,by=bloc.get_render_rect()
+                sp=int(bloc.image.get_height()*0.7)
+                if(flag):
+                    break
+                if((virtualy>=by) and (virtualy <=(by+bloc.image.get_height()+sp)) and virtualx>=bx):
+                    ans=virtualx-bx
+                    flag=True
+            if(not flag):
+                for wall in self.walls:
+                    wx,wy=wall.x,wall.y
+                    if((virtualy>=wy) and (virtualy <=(wy+wall.height)) and virtualx>=wx):               
+                        ans=virtualx-wx
+                        flag=True
+        elif(ori==3):
+            flag=False
             for bloc in self.blocks:
                 bx,by=bloc.get_render_rect()
                 sp=int(bloc.image.get_width()*0.7)
-                nrect=pygame.rect.Rect(bx,by,(bloc.image.get_width()+sp),(bloc.image.get_height()+sp))
-                if(nrect.collidepoint(virtualx,virtualy)):
-                    flag=False
+                if(flag):
                     break
-            
-            if(flag):    
+                if((virtualx>=bx) and (virtualx <=(bx+bloc.image.get_height()+sp)) and virtualy>=by):
+                    ans=virtualy-by
+                    flag=True
+            if(not flag):      
                 for wall in self.walls:
-                    if(wall.collidepoint(virtualx,virtualy)):
-                        flag=False
-                        break
-        if(ori==0 or ori==2):
-            return abs((self.head.rect.x-virtualx))
-        elif(ori==1 or ori==3):
-            return abs((self.head.rect.y-virtualy))
-
+                    wx,wy=wall.x,wall.y
+                    if((virtualx>=wx) and (virtualx <=(wx+wall.width)) and virtualy>=wy):               
+                        ans=virtualy-wy
+                        flag=True
+        elif(ori==1):
+            flag=False
+            for bloc in self.blocks:
+                bx,by=bloc.get_render_rect()
+                sp=int(bloc.image.get_width()*0.7)
+                if(flag):
+                    break
+                if((virtualx>=bx) and (virtualx<=(bx+bloc.image.get_height()+sp)) and virtualy<=by):
+                    ans=by-virtualy
+                    flag=True
+            if(not flag):
+                for wall in self.walls:
+                    wx,wy=wall.x,wall.y
+                    if((virtualx>=wx) and (virtualx<=(wx+wall.width)) and virtualy<=wy):
+                        ans=wy-virtualy
+                        flag=True
+        
+        return ans
     
     def getAtr(self):
         

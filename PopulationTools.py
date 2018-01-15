@@ -20,7 +20,7 @@ def CreateInitialPopulation():
 def son(p1,p2):
     
     son=[]
-    for i in range(p1):
+    for i in range(len(p1)):
         j=randint(1,2)
         #The son's attributes are randomly selected
         if(j==1):
@@ -33,10 +33,10 @@ def mutate(subj):
     
     mutated_subject=[]
     for f in subj:
-        odds=randint(0,19)
+        odds=randint(0,2)
         if(odds==0):
             gene=uniform(-1,1)
-            mutated_sunject.append(gene)
+            mutated_subject.append(gene)
         else:
             mutated_subject.append(f)
     return np.array(mutated_subject)
@@ -45,7 +45,7 @@ def mutate_pop(pop):
     
     mutated_pop=[]
     for s in pop:
-        odds=randint(0,9)
+        odds=randint(0,1)
         if(odds==0):
             mutated_pop.append(mutate(s))
         else:
@@ -56,13 +56,14 @@ def breed(population):
     
     sorted_pop=sorted(population,key=lambda x: x[2],reverse=True)
     most_adapted=sorted_pop[:10]
+    print([(x[0],x[2]) for x in most_adapted])
     next_pop=[]
     
     while(len(next_pop)<100):
         #selecting the parents
         p1=randint(0,9)
         p2=randint(0,9)
-        next_pop.append(son(most_adapted[p1],most_adapted[p2]))
+        next_pop.append(son(most_adapted[p1][1],most_adapted[p2][1]))
     
     return np.array(next_pop)
 
@@ -73,6 +74,7 @@ def name_pop(pop,gen):
     base_name="Gen"+str(gen)+"_chrom"
     for s in pop:
         named_pop.append([(base_name+str(i)), s])
+        i+=1
     return named_pop
 
 class SubjectPool:

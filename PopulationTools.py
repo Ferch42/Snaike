@@ -1,5 +1,7 @@
 import numpy as np
 from random import randint, uniform
+import pickle
+import os
 
 chromsize=243
 
@@ -45,7 +47,7 @@ def mutate_pop(pop):
     
     mutated_pop=[]
     for s in pop:
-        odds=randint(0,1)
+        odds=randint(0,2)
         if(odds==0):
             mutated_pop.append(mutate(s))
         else:
@@ -56,7 +58,9 @@ def breed(population):
     
     sorted_pop=sorted(population,key=lambda x: x[2],reverse=True)
     most_adapted=sorted_pop[:10]
+    print("most_adapted")
     print([(x[0],x[2]) for x in most_adapted])
+    print("----------------------------------")
     next_pop=[]
     
     while(len(next_pop)<100):
@@ -82,9 +86,12 @@ class SubjectPool:
     def __init__(self):
         
         #List of the subjects of the form [ChromName, Chromossome]
-        self.population=CreateInitialPopulation()
+        genn=os.listdir("Gen/")
+        genn=sorted(genn,key=lambda x: int(x.split("_")[1]),reverse=True)
+        print(genn)
+        self.population=pickle.load( open("Gen/" +genn[0], "rb" ) )
         self.iterator=0
-        self.generation=1
+        self.generation=int(genn[0].split("_")[1])
         
     def set_fitness(self,fitness):
         
@@ -99,6 +106,7 @@ class SubjectPool:
             new_pop=breed(self.population)
             new_pop=mutate_pop(new_pop)
             new_pop=name_pop(new_pop,self.generation)
+            pickle.dump( self.population, open("Gen/Gen_"+str(self.generation)+"_.gen", "wb" ) )
             self.population=new_pop
             self.iterator=0
         return self.population[self.iterator]

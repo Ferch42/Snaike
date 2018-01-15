@@ -16,6 +16,7 @@ class Snake:
         self.headImg=headIm
         self.bodyImg=pygame.Surface((0,0))
         self.walls=[]
+        self.alive=True
         
     def move(self,ori):
         
@@ -44,6 +45,9 @@ class Snake:
         self.walls.append(r4)
     
     def isAlive(self):
+
+        if(self.alive==False):
+            return False
         
         head_rect=self.head.rect
         

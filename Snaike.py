@@ -93,9 +93,9 @@ session.run(tf.global_variables_initializer())
 
 #Neural net configuration
 inputlayer=4
-layer1=30
+layer1=10
 layer2=3
-chromsize=243
+chromsize=83
 
 
 # In[6]:
@@ -125,7 +125,7 @@ def CreateNeuralNet(chromossome):
     return out_layer
 
 
-# In[ ]:
+# In[7]:
 
 #Pool
 pool=SubjectPool()
@@ -134,13 +134,14 @@ neural_net=CreateNeuralNet(subject[1])
 
 #Defined as time + score*time
 fitness=0
-timeout=10
+timeout=1.5
 food_time=time.time()
 hamb=0
 emiliaSnake.addBlock()
+garbage_time=time.time()
 
 
-# In[ ]:
+# In[8]:
 
 #game loop
 print("game starts")
@@ -195,7 +196,7 @@ while True:
                 pygame.quit()
                 sys.exit()
     
-    framecount=(framecount+1)%5
+    framecount=(framecount+1)%2
     fitness=timedelta*(score+1)
     fooddelta=now-food_time
     if(fooddelta>=timeout):
@@ -241,16 +242,15 @@ while True:
         gameOverFlag=False
         attempt_flag=True
         subject=pool.get_subj()
+        
         t1=time.time()
-        session = tf.Session()
-        neural_net=CreateNeuralNet(subject[1])
-        gc.collect()
-        if(time.time()-t1>2.5):
-            print("game ended due to optimization changes")
-            print("restarting")
+        if(t1-garbage_time>360):
+            print("Restarting... gg")
             pygame.quit()
             sys.exit()
-            os.system("python helper.py")
+        
+
+        neural_net=CreateNeuralNet(subject[1])
         Snake_time=time.time()
         food_time=time.time()
         
@@ -270,11 +270,6 @@ while True:
         
 
     
-    fpsClock.tick(60)
+
             
-
-
-# In[ ]:
-
-
 

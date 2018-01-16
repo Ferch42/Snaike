@@ -2,8 +2,9 @@ import numpy as np
 from random import randint, uniform
 import pickle
 import os
+from threading import Lock
 
-chromsize=243
+chromsize=83
 
 def CreateChromossome(size):
     return np.random.uniform(-1,1,[size])
@@ -23,7 +24,7 @@ def son(p1,p2):
     
     son=[]
     for i in range(len(p1)):
-        j=randint(1,2)
+        j=randint(1,3)
         #The son's attributes are randomly selected
         if(j==1):
             son.append(p1[i])
@@ -86,27 +87,38 @@ class SubjectPool:
     def __init__(self):
         
         #List of the subjects of the form [ChromName, Chromossome]
-        genn=os.listdir("Gen/")
+        genn=os.listdir("Gen2/")
         genn=sorted(genn,key=lambda x: int(x.split("_")[1]),reverse=True)
         print(genn)
-        self.population=pickle.load( open("Gen/" +genn[0], "rb" ) )
+        print(genn[0])
+        self.population=pickle.load( open("Gen2/" +genn[0], "rb" ) )
         self.iterator=0
+        self.lock=Lock()
+        self.fit_count=0
         self.generation=int(genn[0].split("_")[1])
         
     def set_fitness(self,fitness):
         
         #Sets the fitness of a given subject indexed by iterator
+        self.lock.acquire()
         self.population[self.iterator].append(fitness)
-        self.iterator+=1
+        self.fit_count+=1
+        self.lock.release()
         
     def get_subj(self):
+
+        self.lock.acquire()
         
-        if(self.iterator==100):
+        if(self.iterator>=100 and self.fit_count>=100):
             self.generation+=1
             new_pop=breed(self.population)
             new_pop=mutate_pop(new_pop)
             new_pop=name_pop(new_pop,self.generation)
-            pickle.dump( self.population, open("Gen/Gen_"+str(self.generation)+"_.gen", "wb" ) )
+            pickle.dump( self.population, open("Gen2/Gen_"+str(self.generation)+"_.gen", "wb" ) )
             self.population=new_pop
             self.iterator=0
-        return self.population[self.iterator]
+
+        index=self.iterator%100
+        self.iterator+=1
+        self.lock.release()
+        return self.population[index]

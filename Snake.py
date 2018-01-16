@@ -129,11 +129,11 @@ class Snake:
             flag=False
             for bloc in self.blocks:
                 bx,by=bloc.get_render_rect()
-                sp=int(bloc.image.get_height()*0.7)
+                sp=int(bloc.image.get_width()*0.7)
                 if(flag):
                     break
                 if((virtualy>=by) and (virtualy <=(by+bloc.image.get_height()+sp)) and virtualx>=bx):
-                    ans=virtualx-bx
+                    ans=virtualx-bx+bloc.image.get_width()
                     flag=True
             if(not flag):
                 for wall in self.walls:
@@ -145,11 +145,11 @@ class Snake:
             flag=False
             for bloc in self.blocks:
                 bx,by=bloc.get_render_rect()
-                sp=int(bloc.image.get_width()*0.7)
+                sp=int(bloc.image.get_height()*0.7)
                 if(flag):
                     break
                 if((virtualx>=bx) and (virtualx <=(bx+bloc.image.get_height()+sp)) and virtualy>=by):
-                    ans=virtualy-by
+                    ans=virtualy-by+bloc.image.get_height()
                     flag=True
             if(not flag):      
                 for wall in self.walls:
